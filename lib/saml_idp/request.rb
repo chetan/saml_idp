@@ -41,11 +41,15 @@ module SamlIdp
     end
 
     def valid?
-      service_provider? &&
-        valid_signature? &&
-        acs_url.present?
+      begin
+        service_provider? &&
+          valid_signature? &&
+          acs_url.present?
+      rescue
+        false
+      end
     end
-
+    
     def valid_signature?
       service_provider.valid_signature? document
     end
