@@ -73,11 +73,12 @@ module SamlIdp
     alias_method :raw, :fresh
     private :fresh
 
+    # Returns an array of values for the given attribute/getter
     def get_values_for(friendly_name, getter)
       result = nil
       if getter.present?
         if getter.respond_to?(:call)
-          result = getter.call(principal)
+          result = getter.call(principal, audience_uri)
         else
           message = getter.to_s.underscore
           result = principal.public_send(message) if principal.respond_to?(message)
@@ -86,7 +87,7 @@ module SamlIdp
         message = friendly_name.to_s.underscore
         result = principal.public_send(message) if principal.respond_to?(message)
       end
-      Array(result)
+      result.kind_of?(Array) ? result : Array(result)
     end
     private :get_values_for
 
